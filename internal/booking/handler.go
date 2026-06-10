@@ -17,6 +17,8 @@ func NewHandler(service *Service) *Handler {
 }
 
 var ErrInvalidBooking = errors.New("invalid booking data")
+var ErrInvalidBookingID = errors.New("invalid booking id")
+var ErrInvalidStatus = errors.New("invalid booking status")
 
 func (h *Handler) CreateBooking(w http.ResponseWriter, r *http.Request) {
 	log.Printf(
@@ -105,4 +107,43 @@ func (h *Handler) GetBookingByID(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(booking)
+}
+func (h *Handler) UpdateBooking(w http.ResponseWriter, r *http.Request) {
+	log.Printf("UpdateBooking called method=%s remote=%s", r.Method, r.RemoteAddr)
+
+	id := r.PathValue("id")
+	var updateReq UpdateBookingRequest
+
+	err := json.NewDecoder(r.Body).Decode(&updateReq)
+	if err != nil {
+		log.Printf("UpdateBooking decode error: %v", err)
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	err = h.service.UpdateBooking(r.Context(), id, updateReq)
+	if err != nil {
+		if errors.Is(err, ErrInvalidBookingID) {
+			http.Error(w, "invalid booking id", http.StatusBadRequest)
+			return
+		}
+
+		if errors.Is(err, ErrBookingNotFound) {
+			http.Error(w, "booking not found", http.StatusNotFound)
+			return
+		}
+
+		if errors.Is(err, ErrHotelNameRequired) ||
+			errors.Is(err, ErrStatusRequired) ||
+			errors.Is(err, ErrInvalidStatus) {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		log.Printf("UpdateBooking service error: %v", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }

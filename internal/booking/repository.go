@@ -86,3 +86,22 @@ func (r *Repository) GetAllBookingsByStatus(ctx context.Context, status BookingS
 
 	return bookings, nil
 }
+
+type UpdateBookingRequest struct {
+	HotelName string        `json:"hotel_name"`
+	Status    BookingStatus `json:"status"`
+}
+
+func (r *Repository) UpdateBooking(ctx context.Context, id string, updateReq UpdateBookingRequest) error {
+	objID, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	result, err := r.collection.UpdateOne(ctx, bson.M{"_id": objID},
+		bson.M{"$set": bson.M{"status": updateReq.Status, "hotel_name": updateReq.HotelName}})
+
+	if result.ModifiedCount == 0 {
+		return ErrBookingNotFound
+	}
+	return err
+}

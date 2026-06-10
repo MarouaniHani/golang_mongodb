@@ -28,6 +28,7 @@ func main() {
 	mux.HandleFunc("POST /bookings", handler.CreateBooking)
 	mux.HandleFunc("GET /bookings", handler.GetAllBookingsByStatus)
 	mux.HandleFunc("GET /bookings/{id}", handler.GetBookingByID)
+	mux.HandleFunc("PUT /bookings/{id}", handler.UpdateBooking)
 	log.Println("server started on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Fatal(err)

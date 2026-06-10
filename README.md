@@ -146,6 +146,41 @@ Returns the booking object matching the provided ID.
   "created_at": "2026-06-09T14:56:05.635Z"
 }
 ```
+Updates an existing booking identified by its ID.
+
+#### PUT /bookings/{id}
+
+## Path Parameters
+
+| Parameter | Type   | Required | Description                          |
+|-----------|--------|----------|--------------------------------------|
+| `id`      | string | Yes      | The unique identifier of the booking |
+
+## Request Body
+
+Content-Type: `application/json`
+
+| Field        | Type   | Required | Description                                      |
+|--------------|--------|----------|--------------------------------------------------|
+| `status`     | string | No       | The new status of the booking (e.g. `CONFIRMED`) |
+| `hotel_name` | string | No       | The name of the hotel for the booking            |
+
+### Example Request Body
+
+```json
+{
+  "status": "CONFIRMED",
+  "hotel_name": "Hilton"
+}
+```
+
+## Responses
+
+| Status Code | Description                                      |
+|-------------|--------------------------------------------------|
+| `204`       | Booking updated successfully. No content returned. |
+| `400`       | Bad request — invalid input data                 |
+| `404`       | Booking not found for the given ID               |
 
 ## Notes
 

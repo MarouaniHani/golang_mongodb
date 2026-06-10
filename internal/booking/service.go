@@ -5,6 +5,9 @@ import (
 	"errors"
 )
 
+var ErrHotelNameRequired = errors.New("hotel name is required")
+var ErrStatusRequired = errors.New("status is required")
+
 type Service struct {
 	repository *Repository
 }
@@ -34,4 +37,13 @@ func (s *Service) GetAllBookingsByStatus(ctx context.Context, status BookingStat
 }
 func (s *Service) GetBookingByID(ctx context.Context, id string) (*Booking, error) {
 	return s.repository.GetBookingByID(ctx, id)
+}
+func (s *Service) UpdateBooking(ctx context.Context, id string, updateReq UpdateBookingRequest) error {
+	if updateReq.HotelName == "" {
+		return ErrHotelNameRequired
+	}
+	if !IsValidStatus(updateReq.Status) {
+		return ErrStatusRequired
+	}
+	return s.repository.UpdateBooking(ctx, id, updateReq)
 }

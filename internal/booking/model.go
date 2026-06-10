@@ -14,6 +14,17 @@ const (
 	StatusCancelled BookingStatus = "CANCELLED"
 )
 
+var validStatuses = map[BookingStatus]struct{}{
+	StatusPending:   {},
+	StatusConfirmed: {},
+	StatusCancelled: {},
+}
+
+func IsValidStatus(status BookingStatus) bool {
+	_, ok := validStatuses[status]
+	return ok
+}
+
 type Booking struct {
 	ID           bson.ObjectID `json:"id" bson:"_id,omitempty"`
 	CustomerName string        `json:"customer_name" bson:"customer_name"`
