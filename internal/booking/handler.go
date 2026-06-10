@@ -147,3 +147,23 @@ func (h *Handler) UpdateBooking(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+func (h *Handler) DeleteBooking(w http.ResponseWriter, r *http.Request) {
+	log.Printf("DeleteBooking called method=%s remote=%s", r.Method, r.RemoteAddr)
+
+	id := r.PathValue("id")
+	err := h.service.DeleteBooking(r.Context(), id)
+	if err != nil {
+		if errors.Is(err, ErrInvalidBookingID) {
+			http.Error(w, "invalid booking id", http.StatusBadRequest)
+			return
+		}
+		if errors.Is(err, ErrBookingNotFound) {
+			http.Error(w, "booking not found", http.StatusNotFound)
+			return
+		}
+		log.Printf("DeleteBooking service error: %v", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

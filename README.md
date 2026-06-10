@@ -182,6 +182,27 @@ Content-Type: `application/json`
 | `400`       | Bad request — invalid input data                 |
 | `404`       | Booking not found for the given ID               |
 
+#### DELETE /bookings/:id
+
+Deletes an existing booking identified by its unique ID.
+
+## Path Parameters
+
+| Parameter | Type   | Required | Description                          |
+|-----------|--------|----------|--------------------------------------|
+| `id`      | string | Yes      | The unique identifier of the booking |
+
+## Request Body
+
+None.
+
+## Responses
+
+| Status Code | Description                                        |
+|-------------|----------------------------------------------------|
+| `204`       | Booking deleted successfully. No content returned. |
+| `404`       | Booking not found for the given ID                 |
+
 ## Notes
 
 - Ajustez la configuration et les variables d'environnement selon l'environnement de production.

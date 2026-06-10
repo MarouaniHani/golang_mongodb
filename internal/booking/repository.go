@@ -105,3 +105,17 @@ func (r *Repository) UpdateBooking(ctx context.Context, id string, updateReq Upd
 	}
 	return err
 }
+func (r *Repository) DeleteBooking(ctx context.Context, id string) error {
+	objID, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	result, err := r.collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return ErrBookingNotFound
+	}
+	return err
+}

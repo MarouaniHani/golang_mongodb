@@ -47,3 +47,6 @@ func (s *Service) UpdateBooking(ctx context.Context, id string, updateReq Update
 	}
 	return s.repository.UpdateBooking(ctx, id, updateReq)
 }
+func (s *Service) DeleteBooking(ctx context.Context, id string) error {
+	return s.repository.DeleteBooking(ctx, id)
+}
